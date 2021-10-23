@@ -7,7 +7,7 @@
 One time:
 
 ```shell
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 Run:
@@ -17,7 +17,15 @@ python3 main.py
 
 ### How to run as service on linux (debian)
 
-1. Create file:
+1. Setup python env
+
+```shell
+pip install pipenv
+
+pipenv install
+```
+
+2. Create linux system service file:
 
 ```text
 [Unit]
@@ -34,7 +42,13 @@ WantedBy=multi-user.target
 
 ```
 
-2. Setup service
+2. Move it to `/etc/systemd/system/`
+
+```shell
+sudo cp example.service /etc/systemd/system/
+```
+   
+3. Setup service
 
 ```shell
 #Reload the service files to include the new service
