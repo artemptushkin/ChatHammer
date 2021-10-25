@@ -28,7 +28,7 @@ def hammer_setup(update, context):
     else:
         context.user_data[str(chat_id) + '_regexp'] = context.args[0]
         context.user_data[str(chat_id) + '_auditor'] = update.message.from_user.id
-        update.message.reply_text(text='you configuration has been set, the requester is auditor')
+        update.message.reply_text(text='you configuration has been set, the requester is auditor. Please call /start to start the ban function of the bot')
 
 
 # todo to finish this it's needed to find how to get user chat_id by it's name
@@ -48,6 +48,7 @@ def start_hammer(update, context):
     regexp = context.user_data.get(str(chat_id) + '_regexp')
     if regexp is not None:
         dispatcher.add_handler(MessageHandler(Filters.chat_type.groups & Filters.regex(regexp), ban_and_revoke_messages))
+        update.message.reply_text(text='Bot has been started, it will be banning but the provided regexp')
     else:
         update.message.reply_text(text='please, configure hammer at first: /hammer {your_regexp}')
 
