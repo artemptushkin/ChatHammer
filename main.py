@@ -1,3 +1,4 @@
+from telegram import MessageEntity
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from functools import wraps
 
@@ -47,7 +48,7 @@ def start_hammer(update, context):
     chat_id = update.effective_chat.id
     regexp = context.user_data.get(str(chat_id) + '_regexp')
     if regexp is not None:
-        dispatcher.add_handler(MessageHandler(Filters.chat_type.groups & Filters.regex(regexp), ban_and_revoke_messages))
+        dispatcher.add_handler(MessageHandler(Filters.chat_type.groups & (Filters.entity(MessageEntity.URL) | Filters.entity(MessageEntity.TEXT_LINK)), ban_and_revoke_messages))
         update.message.reply_text(text='Bot has been started, it will be banning but the provided regexp')
     else:
         update.message.reply_text(text='please, configure hammer at first: /hammer {your_regexp}')
@@ -79,6 +80,9 @@ def ban_and_revoke_messages(update, context):
     # ban user and revoke all the messages
     bot.ban_chat_member(chat_id=message.chat_id, user_id=message.from_user.id, revoke_messages=True)
 
+def test(update, context):
+    print("hello")
+    update.message.bot
 
 def main():
     """Chat Hammer bot is starting"""
@@ -86,6 +90,7 @@ def main():
     dispatcher.add_handler(CommandHandler("hammer", hammer_setup))
     dispatcher.add_handler(CommandHandler("start", start_hammer))
     dispatcher.add_handler(CommandHandler("config", get_config))
+    dispatcher.add_handler(CommandHandler("test", test))
 
     updater.start_polling()
     # Run the bot until you press Ctrl-C or the process receives SIGINT,
